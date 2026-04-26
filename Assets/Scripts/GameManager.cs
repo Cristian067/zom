@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     {
         var player = Instantiate(playerPrefab, playerSpawnPoint.transform.position, Quaternion.identity);
         Camera.main.transform.SetParent(player.transform.GetChild(0).transform);
-        Camera.main.transform.localPosition = new Vector3(0, 0.25f, 0);
+        Camera.main.transform.localPosition = new Vector3(0, 0.40f, 0);
     }
     public void CheckEnemiesCount()
     {

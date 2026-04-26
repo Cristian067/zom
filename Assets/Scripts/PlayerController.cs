@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,6 +9,11 @@ public class PlayerController : MonoBehaviour
 
 
     private Rigidbody rb;
+
+    private GameObject visual;
+    private Animator animator;
+
+    [SerializeField] private GameObject shootPointGo;
 
 
     float xRotation = 0f;
@@ -20,9 +26,11 @@ public class PlayerController : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        visual = transform.GetChild(0).gameObject;
+        animator = visual.GetComponent<Animator>();
 
 
-        
+
     }
 
     // Update is called once per frame
@@ -34,7 +42,7 @@ public class PlayerController : MonoBehaviour
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
-        GameObject visual = transform.GetChild(0).gameObject;
+        
         visual.transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
 
 
@@ -59,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.Mouse0))
         {
-            Shoot();
+            StartCoroutine(Shoot());
         }
     }
 
@@ -75,17 +83,42 @@ public class PlayerController : MonoBehaviour
 
         //transform.Translate(direction * Time.deltaTime * movementSpeed);
     }
-    private void Shoot()
+    private IEnumerator Shoot()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit))
+        animator.SetBool("shoot",true);
+        //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward,out RaycastHit hit,Mathf.Infinity))
         {
+            Debug.Log(hit.collider.gameObject.name);
+            Debug.DrawLine(Camera.main.transform.position, hit.point);
+            Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward, Color.blue);
+            
             if (hit.collider.CompareTag("Enemy"))
             {
+                
+                Debug.Log("dhd");
                 Destroy(hit.collider.gameObject);
-                GameObject.Find("GameManager").GetComponent<GameManager>().enemiesInScene--;
-                GameObject.Find("GameManager").GetComponent<GameManager>().CheckEnemiesCount();
+                GameObject.Find("Manager").GetComponent<GameManager>().enemiesInScene--;
+                GameObject.Find("Manager").GetComponent<GameManager>().CheckEnemiesCount();
             }
         }
+        yield return new WaitForSeconds(0.1f);
+        animator.SetBool("shoot", false);
+
+    }
+
+    private void OnDrawGizmos()
+    {   
+        
+        //Gizmos.DrawSphere(hit.transform.position, 1);
+        Gizmos.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward );
+        //Gizmos.DrawRay(ray);
+        
+        //Gizmos.  //DrawLine(Camera.main.transform.position, ray);
+    }
+
+    private void Jump()
+    {
+
     }
 }

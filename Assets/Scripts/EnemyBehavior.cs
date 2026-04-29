@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.AI;
+using UnityEditor.Animations;
 
 public class EnemyBehavior : MonoBehaviour
 {
@@ -21,11 +22,16 @@ public class EnemyBehavior : MonoBehaviour
     private states actualState = states.Idle;
 
 
+    public float attackRange;
+    public float attackCooldown;
+    public float actualAttackCooldown;
+
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        animator = GetComponent<Animator>();
+        animator = transform.GetChild(1).GetComponent<Animator>();
     }
 
     // Update is called once per frame
@@ -52,9 +58,37 @@ public class EnemyBehavior : MonoBehaviour
                 
                 players = players.OrderByDescending(x => (x.transform.position - transform.position).sqrMagnitude).ToList();
                 agent.destination = players[0].transform.position;
+                animator.SetBool("run",true);
+                if(Vector3.Distance(transform.position,players[0].transform.position) < attackRange)
+                {
+                    actualState = states.Attack;
+                }
                 
                 
                 break;
+
+            case states.Attack:
+
+                Attack();
+                actualState = states.Idle;
+                break;
         }
+    }
+
+
+
+
+    void Attack()
+    {
+        if(actualAttackCooldown <= 0)
+        {
+            actualAttackCooldown = attackCooldown;
+        }
+        else
+        {
+            return;
+        }
+        animator.SetTrigger("Attack");
+
     }
 }

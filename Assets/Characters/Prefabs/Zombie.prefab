@@ -616,7 +616,7 @@ Animator:
   m_GameObject: {fileID: 2500271326998654825}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: bde23a40857b2f043a1488010fabf796, type: 2}
+  m_Controller: {fileID: 9100000, guid: 17a9d7e4e91ca244382a678cd79b702c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1641,6 +1641,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfe110cab50c37f4a8392c03bf55060d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyBehavior
+  life: 0
   attackRange: 1
   attackCooldown: 1
   actualAttackCooldown: 0

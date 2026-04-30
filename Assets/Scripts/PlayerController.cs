@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
     private Animator animator;
 
     [SerializeField] private GameObject shootPointGo;
+    [SerializeField] private int life;
+    [SerializeField] private int damage;
 
 
     float xRotation = 0f;
@@ -96,10 +98,8 @@ public class PlayerController : MonoBehaviour
             if (hit.collider.CompareTag("Enemy"))
             {
                 
-                Debug.Log("dhd");
-                Destroy(hit.collider.gameObject);
-                GameObject.Find("Manager").GetComponent<GameManager>().enemiesInScene--;
-                GameObject.Find("Manager").GetComponent<GameManager>().CheckEnemiesCount();
+                hit.collider.gameObject.GetComponent<EnemyBehavior>().Hurt(damage);
+                
             }
         }
         yield return new WaitForSeconds(0.1f);
@@ -107,6 +107,15 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    public void Hurt(int damage)
+    {
+        //Implementar vida
+        life -= damage;
+        if (life <= 0)
+        {
+            GameManager.Instance.GameOver(this.gameObject);
+        }
+    }
     private void OnDrawGizmos()
     {   
         

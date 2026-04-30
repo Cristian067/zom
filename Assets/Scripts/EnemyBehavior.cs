@@ -12,6 +12,9 @@ public class EnemyBehavior : MonoBehaviour
     private List<GameObject> players;
 
 
+    [SerializeField] private int life;
+
+
     private enum states
     {
         Idle,
@@ -58,7 +61,7 @@ public class EnemyBehavior : MonoBehaviour
                 
                 players = players.OrderByDescending(x => (x.transform.position - transform.position).sqrMagnitude).ToList();
                 agent.destination = players[0].transform.position;
-                animator.SetBool("run",true);
+                //animator.SetBool("run",true);
                 if(Vector3.Distance(transform.position,players[0].transform.position) < attackRange)
                 {
                     actualState = states.Attack;
@@ -77,6 +80,18 @@ public class EnemyBehavior : MonoBehaviour
 
 
 
+    public void Hurt(int damage)
+    {
+        life -= damage;
+        if (life <= 0)
+        {
+            animator.SetTrigger("isDead");
+            GameManager.Instance.enemiesInScene--;
+            GameManager.Instance.CheckEnemiesCount();
+            Destroy(gameObject);
+        }
+    }
+
 
     void Attack()
     {
@@ -88,7 +103,7 @@ public class EnemyBehavior : MonoBehaviour
         {
             return;
         }
-        animator.SetTrigger("Attack");
+        animator.SetTrigger("isAttacking");
 
     }
 }
